@@ -13,6 +13,9 @@ tellerA = Teller.new #1 minute
 tellerB = Teller.new #2 minutes
 tellerC = Teller.new #3 minutes
 
+teller_a_is_busy, teller_b_is_busy, teller_c_is_busy = false;
+
+
 #this will determine the dificulty of the task
 def taskLevel(time)
     rand(1..100) > 75 ? time * 2 : time
@@ -46,7 +49,6 @@ end
         elsif(tellerC.get_line_size < tellerA.get_line_size && tellerC.get_line_size < tellerB.get_line_size)
             tellerC.add_to_queue(arr_customers[i])
         end
-    
     end
 
 end
