@@ -2,55 +2,56 @@
 
 require_relative 'models/teller.rb'
 require_relative 'models/customer.rb'
+require_relative 'helpers/queue.rb'
 require_relative 'models/dispatcher.rb'
 
-customers = Array.new
-TOTAL_CUSTOMER = 50
-TOTAL_CUSTOMER_IN_LINE = 5
+class Simulation
+    def initialize(max_customers)
+        @count_serve_customers = 0
+        @max_customers = max_customers
+        #initialize the 3 tellers
+        @tellers = [Teller.new("Teller A"), Teller.new("Teller B"), Teller.new("Teller C")]
 
-
-tellerA = Teller.new #1 minute
-tellerB = Teller.new #2 minutes
-tellerC = Teller.new #3 minutes
-
-teller_a_is_busy, teller_b_is_busy, teller_c_is_busy = false;
-
-
-#this will determine the dificulty of the task
-def taskLevel(time)
-    rand(1..100) > 75 ? time * 2 : time
-end
-
-def fillAray
-    for i in TOTAL_CUSTOMER
-        customers.push(Customer.new(i))
+        @queue = Queue.new
     end
-end
-
-#so there are 5 people in every minute then i can choose their level of task then after than i need to put them to the line
-#then i need to check if the teller is free then i need to serve them
-
-(1..customers.size).each do |i|
-
-    tellerA.add_to_queue(arr_customers[i])
-
-    for x in taskLevel(1)
-        
-    end
-
-    tellerB.add_to_queue(arr_customers[i])
-    tellerC.add_to_queue(arr_customers[i])
-
-    for x in 1..5 do
-        if(tellerA.get_line_size < tellerB.get_line_size && tellerA.get_line_size < tellerC.get_line_size)
-            tellerA.add_to_queue(arr_customers[i])
-        elsif(tellerB.get_line_size < tellerA.get_line_size && tellerB.get_line_size < tellerC.get_line_size)
-            tellerB.add_to_queue(arr_customers[i])
-        elsif(tellerC.get_line_size < tellerA.get_line_size && tellerC.get_line_size < tellerB.get_line_size)
-            tellerC.add_to_queue(arr_customers[i])
+  
+    def run
+      # simulate customers arriving at random intervals
+      Thread.new do
+        while true
+          @queue.enqueue(Customer.new(rand(1..100)))
+          sleep(rand)
         end
-    end
+      end
+  
+      # simulate tellers serving customers
+      while true
+        # check if there are any customers in the queue
+        if !@queue.empty?
+          # find the first available teller
+          teller = @tellers.find { |t| !t.busy? }
 
+          # if a teller is available, have them serve the customer
+          if teller
+            customer = @queue.dequeue
+            teller.serve(customer)
+
+            @count_serve_customers += 1
+          end
+        end
+
+        #break loop if server customers reached 50
+        if(@count_serve_customers == @max_customers)
+            break;
+        end
+      end
+    end
 end
+
+# Run the simulation with 3 tellers
+Simulation.new(20).run
+
+
+
 
 

@@ -1,23 +1,22 @@
 class Teller
-    def initialize
-        @customers = SizedQueue.new(5) #max is 5
-    end
-    
-    def add_to_queue(customer, i)
-        @customers.push(customer)
-        #puts "Customer #{i} added to queue"
-    end
 
-    def get_line_size
-        @customers.length
-    end
+    attr_reader :teller_name
 
-    def get_last
-        @customers.last
+    def initialize(teller_name)
+        @teller_name = teller_name
+        @busy = false
     end
-    
-    def serve(tellerName) 
-        @customers.pop
-        puts "Served by teller #{tellerName}"
+  
+    def busy?
+        puts @teller_name
+        @busy
+    end
+  
+    def serve(customer)
+        @busy = true
+        puts "Customer " + customer.customer_num.to_s
+        # simulate serving the customer by sleeping for a random amount of time
+        sleep(rand)
+        @busy = false
     end
 end
