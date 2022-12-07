@@ -43,6 +43,7 @@ class Teller
         @busy = true
 
         customer = @customers_line.pop #isserve na
+        #puts "customer #{customer.customer_num}"
         #current time teller current na tgsserve kang teller
         customer.random_task_value * @teller_speed 
     end

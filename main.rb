@@ -14,7 +14,7 @@ require_relative 'models/customer.rb'
 class Simulation
 
     def initialize(max_customers)
-        @current_customer_serving = Array.new
+        @current_customer_serving = 0
         @max_customers = max_customers
         @time = 0
         #initialize the 3 tellers
@@ -24,8 +24,8 @@ class Simulation
     def run
       while true
         puts "time #{@time}"
-        num_customers = rand(1..5)
-        #puts " customers to be served : #{num_customers}"
+        num_customers = rand(0..5)
+        puts " customers to be served : #{num_customers}"
         num_customers.times do
             # Add the customer to the queue 
             @tellers.each do |teller|
@@ -43,30 +43,24 @@ class Simulation
                 #in this block we can serve the customer by popping
                 #the customer form the queue means it is now being server
                 #by the teller
-                @current_customer_serving << teller.serve
+                @current_customer_serving = teller.serve
                 #puts "#{@current_customer_serving}"
             end
 
             if teller.is_busy?
                 #this current_customer_serving contains the
                 #product of random task and the telle speed
-                current_load = @current_customer_serving.last - 1
+                current_load = @current_customer_serving - 1
                 #implement the teller load (-1)
                 #assign teller to be not busy after process
                 if current_load == 0
                     teller.busy = false
                 end
             end
-
-            if teller.line_length == 0 
         end
         
         @time += 1
       end
-    end
-
-    def get_total_time
-        puts @current_customer_serving.inject(0){ |sum, x| sum + x }
     end
     
 end
@@ -74,4 +68,3 @@ end
 # Run the simulation with 3 tellers
 simulation = Simulation.new(10)
 simulation.run
-puts simulation.get_total_time
