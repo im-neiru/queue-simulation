@@ -4,12 +4,18 @@ class Teller
     attr_reader :teller_speed
     attr_writer :busy
 
+    @@total_people_in_line = 0
+
     def initialize(teller_name, teller_speed)
         @customers_line = Queue.new #line for the customers
         @teller_name = teller_name
         @teller_speed = teller_speed
         #initilize the tellers as not busy
         @busy = false
+    end
+
+    def self.total_people
+        @@total_people_in_line
     end
 
     def line_length
@@ -29,6 +35,7 @@ class Teller
 
     #add the customer to the line
     def add_to_queue(customer)
+        @@total_people_in_line += 1
         @customers_line.push(customer)
     end
 
