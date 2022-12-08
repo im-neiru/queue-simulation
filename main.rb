@@ -20,8 +20,7 @@ total_people_in_line = 0
 total_processed_customers = 0
 MAX_LINE_SIZE = 5
 MAX_CUSTOMERS = 50
-min_line_index = 0
-min_line_size = MAX_LINE_SIZE
+
 
 def task_type
     rand <= 0.15 ? 2 : 1
@@ -33,35 +32,41 @@ while true
     puts "     Minute #{minute}"
     puts "********************"
 
+    min_line_index = 0
+    min_line_size = MAX_LINE_SIZE
+
     if (Teller.total_people < MAX_CUSTOMERS)
+        puts "total people #{Teller.total_people}"
+        
         num_customers = rand(0..5)
+        puts "customers #{num_customers}"
         num_customers.times do
             #create a new customer
             #find the shortest line
             customer_number += 1
             total_people_in_line += 1
             (0...tellers.size).each do |i|
-                if tellers[i].line_length <= min_line_size
+                if tellers[i].line_length <= MAX_CUSTOMERS
                     min_line_size = tellers[i].line_length
                     min_line_index = i
                 end
             end
 
+            tellers.min_by {|teller| teller.line_length}
+
             #check if tellers are having the equals lines
-            all_lines_equal = tellers.all? {|line_size| line_size.line_length == min_line_size}
+            all_lines_equal = tellers.all? {|teller| teller.line_length == min_line_size}
 
             #check if lines are all equal or if the tellers line size are = 0
             #and after that get the teller index or position in the array
-            teller_index = all_lines_equal || min_line_size >= 0 ? rand(0...tellers.length) : min_line_index
+            teller_index = all_lines_equal || min_line_size == 0 ? rand(0...tellers.length) : min_line_index
 
             #get the teller
             current_teller = tellers[teller_index]
 
-            if !current_teller.is_busy?
-                customer = Customer.new(customer_number, task_type)
-                #puts "Customer #{customer.customer_num} and task type #{customer.random_task_value} is added to line of #{current_teller.teller_name}"
-                current_teller.add_to_queue(customer)
-            end
+            customer = Customer.new(customer_number, task_type)
+            #puts "Customer #{customer.customer_num} and task type #{customer.random_task_value} is added to line of #{current_teller.teller_name}"
+            current_teller.add_to_queue(customer)
         end
     end
 
@@ -73,7 +78,7 @@ while true
         #the teller is busy and currently serving a customer
         if teller.is_busy?
             current_cus_time_to_finished -= 1
-            if current_cus_time_to_finished == 0
+            if current_cus_time_to_finished <= 0
                 teller.busy = false
                 total_processed_customers += 1
             end
@@ -83,6 +88,7 @@ while true
     end
 
     if (total_processed_customers == MAX_CUSTOMERS)
+        puts "End of the day"
         break
     end
 
