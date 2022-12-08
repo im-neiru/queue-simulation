@@ -6,7 +6,7 @@ class Teller
     attr_writer :busy
 
     def initialize(teller_name, teller_speed)
-        @customers_line = Queue.new #line for the customers
+        @customers_line = Array.new #line for the customers
 
         @teller_speed = teller_speed
         @teller_name = teller_name
@@ -28,23 +28,23 @@ class Teller
     #serve a customer
     def current_running_load #this is the load of the backline
         #puts "len  #{@customers_line.length}"
-        @time_it_takes = @customers_line.length * @teller_speed
+        @customers_line.length * @teller_speed
         #puts "time it takes #{@time_it_takes}"
     end
 
     #add the customer to the line
     def add_queue(customer)
-        @customers_line.push(customer)
+        @customers_line << customer
     end
     
     #serve the customer and exit the customer after the
     #task on hand is done
     def serve
         @busy = true
-
-        customer = @customers_line.pop #isserve na
+        customer =  @customers_line.shift #isserve na
         #puts "customer #{customer.customer_num}"
         #current time teller current na tgsserve kang teller
+        
         customer.random_task_value * @teller_speed 
     end
 end
