@@ -17,12 +17,20 @@ class Teller
         @busy = false
     end
 
+    def compute_time
+        accumulator = 0
+        @customers_line.each do |customer|
+            accumulator += customer.random_task_value * @teller_speed
+        end
+        accumulator
+    end
+
     def print
         line = ""
         @customers_line.each do |customer|
             line += " . " + customer.customer_num.to_s
         end
-        puts "#{@teller_name} [#{line}]"
+        puts "#{@teller_name} [#{line}] est. time: #{compute_time}"
     end
 
     def is_process_done(minutes)
