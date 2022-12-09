@@ -15,11 +15,11 @@ class Simulation
 
     def shortest_teller
         min_line_index = 0
-        min_line_size = 10000000000
-        similar_count = 0
+        min_time = 10000000000
+
         @tellers.each do |teller|
-            if(teller.line_length < min_line_size)
-                min_line_size = teller.line_length
+            if(teller.compute_time < min_time)
+                min_time = teller.compute_time
                 min_line_index = teller.teller_index
             end
         end
