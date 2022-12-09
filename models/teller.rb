@@ -24,10 +24,6 @@ class Teller
     def line_length
         @customers_line.empty? ? 0 : @customers_line.length
     end
-    
-    def is_busy?
-        @busy
-    end
 
     def set_status(status)
         @busy = status

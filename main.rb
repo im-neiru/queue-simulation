@@ -69,12 +69,12 @@ while (total_processed_customers <= MAX_CUSTOMERS)
     end
 
     tellers.each do |teller|
-        if teller.line_length > 0 && teller.is_busy? == false
+        if teller.line_length > 0 && teller.busy == false
             current_cus_time_to_finished = teller.serve
         end
 
         #the teller is busy and currently serving a customer
-        if teller.is_busy? == true
+        if teller.busy == true
             current_cus_time_to_finished -= 1
             #puts "#{current_cus_time_to_finished}"
             if current_cus_time_to_finished <= 0
